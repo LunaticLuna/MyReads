@@ -1,31 +1,48 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import Book from './Book'
 import * as BooksAPI from './BooksAPI'
 
 class Search extends Component{
 	state = {
-		query : '',
-		books : []
+		query : ' ',
+		books : [],
 	}
 
 	updateQuery = (newQuery) =>{
 		this.setState(()=>({
-			query:newQuery.trim()
+			query : newQuery.trim()? newQuery.trim() : ' ',
 		}))
 	}
-	componentDidMount(){
-    BooksAPI.search(this.state.query)
-    .then((books)=>{
-      this.setState(()=>({
-        books : books
-      }))
-    })
+	componentDidUpdate(prevProps,prevState){
+		const currQuery = this.state.query
+		if (currQuery !== prevState.query){
+			BooksAPI.search(currQuery)
+	    .then((value)=>{
+	    	console.log('query = '+ currQuery+'; value = '+value)
+	    	if (!value.error) {
+	    		this.setState(()=>({
+		        books : value,
+		      }))
+	    	}else{
+	    		this.setState(()=>({
+		        books : [],
+		      }))
+	    	}
+	    })
+	    .catch(()=>{
+	      this.setState(()=>({
+	        books : [],
+	      }))
+	    })
+		}
+    
   }
 	render(){
 		return (
 			<div className="search-books">
         <div className="search-books-bar">
-        	{JSON.stringify(this.state.books)}
+        	{/*JSON.stringify(this.state)*/}
         	<Link to = '/' className="close-search">Close</Link>
           <div className="search-books-input-wrapper">
             {/*
@@ -44,7 +61,18 @@ class Search extends Component{
           </div>
         </div>
         <div className="search-books-results">
-          <ol className="books-grid"></ol>
+          <ol className="books-grid">
+	          {this.state.books.map((book)=>(
+          			<li key = {book.id} >
+          				{/*JSON.stringify(book)*/}
+		          		<Book
+		          			imgLink = {book.imageLinks.smallThumbnail}
+		          			title = {book.title}
+		          			authors = {book.authors} />
+		          	</li>
+          		))
+          	}
+          </ol>
         </div>
       </div>
 		)
