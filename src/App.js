@@ -21,23 +21,26 @@ class BooksApp extends React.Component {
   componentDidMount(){
     BooksAPI.getAll()
     .then((books)=>{
-      this.setState(()=>{
-        current : books.filter((book)=>book.shelf==='current')
-        want : books
-        read : books
-      })
+      this.setState(()=>({
+        current : books.filter((book)=>book.shelf==='currentlyReading'),
+        want : books.filter((book)=>book.shelf==='wantToRead'),
+        read : books.filter((book)=>book.shelf==='read'),
+      }))
     })
   }
   render() {
 
     return (
       <div className = "app">
+
         <Route exact path = '/' render = {()=>(
             <div>
+
               <div className = "list-books">
                 <div className="list-books-title">
                     <h1>MyReads</h1>
                 </div>
+                {/*JSON.stringify(this.state.read) */}
                 <div className="list-books-content">
                   <BookShelf 
                     header = {'Currently Reading'}

@@ -6,16 +6,17 @@ class BookShelf extends Component{
 		return (
 			<div className="bookshelf">
 				<h2 className="bookshelf-title">{this.props.header}</h2>
-
 				<div className="bookshelf-books">
           <ol className="books-grid">
-          	{this.props.books.map((book)=>{
+          	{this.props.books.map((book)=>(
           			<li key = {book.id} >
+          				{/*JSON.stringify(book)*/}
 		          		<Book
+		          			imgLink = {book.imageLinks.smallThumbnail}
 		          			title = {book.title}
 		          			authors = {book.authors} />
 		          	</li>
-          		})
+          		))
           	}
           </ol>
         </div>
