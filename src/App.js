@@ -14,17 +14,31 @@ class BooksApp extends React.Component {
      * users can use the browser's back and forward buttons to navigate between
      * pages, as well as provide a good URL they can bookmark and share.
      */
-    current : [],
-    want : [],
-    read : [],
+    books : [],
+  }
+  moveShelf = (b,shelf) =>{
+    BooksAPI.update({id:b.id},shelf)
+      .then((value)=>{
+        console.log('yayyy')
+    })
+    if (shelf === 'none'){
+      this.setState((currentState) => ({
+        books : currentState.books.filter((book)=> (book.id !== b.id) ),
+      }))
+    }else{
+      this.setState((currentState) => ({
+        books : currentState.books.filter((book)=> (book.id !== b.id) ).concat([b])
+      }))
+    }
+    
+
+    
   }
   componentDidMount(){
     BooksAPI.getAll()
     .then((books)=>{
       this.setState(()=>({
-        current : books.filter((book)=>book.shelf==='currentlyReading'),
-        want : books.filter((book)=>book.shelf==='wantToRead'),
-        read : books.filter((book)=>book.shelf==='read'),
+        books : books,
       }))
     })
   }
@@ -35,7 +49,6 @@ class BooksApp extends React.Component {
 
         <Route exact path = '/' render = {()=>(
             <div>
-
               <div className = "list-books">
                 <div className="list-books-title">
                     <h1>MyReads</h1>
@@ -44,23 +57,25 @@ class BooksApp extends React.Component {
                 <div className="list-books-content">
                   <BookShelf 
                     header = {'Currently Reading'}
-                    books = {this.state.current} />
+                    books = {this.state.books.filter((book)=>book.shelf==='currentlyReading')}
+                    onMoveShelf = {(book,shelf)=>this.moveShelf(book,shelf)} />
                   <BookShelf 
                     header = {'Want to Read'}
-                    books = {this.state.want} />
+                    books = {this.state.books.filter((book)=>book.shelf==='wantToRead')}
+                    onMoveShelf = {(book,shelf)=>this.moveShelf(book,shelf)} />
                   <BookShelf 
                     header = {'Read'}
-                    books = {this.state.read} />
+                    books = {this.state.books.filter((book)=>book.shelf==='read')}
+                    onMoveShelf = {(book,shelf)=>this.moveShelf(book,shelf)} />
                 </div>
               </div>
               <div className="open-search">
-                <Link
-                  to = '/search'
-                  >
-                </Link>
+                <Link to = '/search'>search</Link>
               </div>
             </div>)} />
-        <Route path = '/search' component = {Search}/>
+        <Route path = '/search' render = {()=>(
+            <Search onMoveShelf = {(book,shelf)=>this.moveShelf(book,shelf)} />
+          )} />
         
       </div>
     )

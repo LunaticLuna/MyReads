@@ -12,9 +12,12 @@ class BookShelf extends Component{
           			<li key = {book.id} >
           				{/*JSON.stringify(book)*/}
 		          		<Book
-		          			imgLink = {book.imageLinks.smallThumbnail}
+		          			id = {book.id}
+		          			imgLink = {book.imgLink?book.imgLink:book.imageLinks.smallThumbnail}
 		          			title = {book.title}
-		          			authors = {book.authors} />
+		          			authors = {book.authors}
+		          			shelf = {book.shelf}
+		          			onMoveShelf = {this.props.onMoveShelf} />
 		          	</li>
           		))
           	}

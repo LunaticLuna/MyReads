@@ -5,38 +5,43 @@ import * as BooksAPI from './BooksAPI'
 
 class Search extends Component{
 	state = {
-		query : ' ',
+		query : '',
 		books : [],
 	}
 
 	updateQuery = (newQuery) =>{
 		this.setState(()=>({
-			query : newQuery.trim()? newQuery.trim() : ' ',
+			query : newQuery,
 		}))
 	}
 	componentDidUpdate(prevProps,prevState){
 		const currQuery = this.state.query
 		if (currQuery !== prevState.query){
-			BooksAPI.search(currQuery)
-	    .then((value)=>{
-	    	console.log('query = '+ currQuery+'; value = '+value)
-	    	if (!value.error) {
-	    		this.setState(()=>({
-		        books : value,
-		      }))
-	    	}else{
-	    		this.setState(()=>({
+			if (currQuery === ''){
+				this.setState(()=>({
 		        books : [],
 		      }))
-	    	}
-	    })
-	    .catch(()=>{
-	      this.setState(()=>({
-	        books : [],
-	      }))
-	    })
+			}else{
+				BooksAPI.search(currQuery)
+		    .then((value)=>{
+		    	if (!value.error) {
+		    		this.setState(()=>({
+			        books : value,
+			      }))
+		    	}else{
+		    		this.setState(()=>({
+			        books : [],
+			      }))
+		    	}
+		    })
+		    .catch(()=>{
+		      this.setState(()=>({
+		        books : [],
+		      }))
+		    })
+			}
+			
 		}
-    
   }
 	render(){
 		return (
@@ -54,7 +59,7 @@ class Search extends Component{
               you don't find a specific author or title. Every search is limited by search terms.
             */}
             <input type="text" 
-            	placeholder="Search by title or author"
+            	placeholder = "Search by title or author"
             	value = {this.state.query}
             	onChange = {(event) => this.updateQuery(event.target.value)} />
 
@@ -66,9 +71,12 @@ class Search extends Component{
           			<li key = {book.id} >
           				{/*JSON.stringify(book)*/}
 		          		<Book
+		          			id = {book.id}
 		          			imgLink = {book.imageLinks.smallThumbnail}
 		          			title = {book.title}
-		          			authors = {book.authors} />
+		          			authors = {book.authors}
+		          			shelf = {book.shelf}
+		          			onMoveShelf = {this.props.onMoveShelf} />
 		          	</li>
           		))
           	}
