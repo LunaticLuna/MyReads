@@ -16,6 +16,7 @@ class Search extends Component{
 	}
 	componentDidUpdate(prevProps,prevState){
 		const currQuery = this.state.query
+		const props = this.props
 		if (currQuery !== prevState.query){
 			if (currQuery === ''){
 				this.setState(()=>({
@@ -25,8 +26,29 @@ class Search extends Component{
 				BooksAPI.search(currQuery)
 		    .then((value)=>{
 		    	if (!value.error) {
+		    		value.forEach(
+			        	function(book){
+			        		if (props.currentlyReading.filter((b)=> b.id === book.id).length!==0){
+			        			console.log(prevProps.currentlyReading.filter((b)=> b.id === book.id))
+			        			console.log("cr")
+			        			book.shelf = "currentlyReading"
+			        		}else{
+			        			if (props.wantToRead.filter((b)=>b.id === book.id).length!==0){
+			        				console.log("wtr")
+			        				book.shelf = "wantToRead"
+			        			}else{
+			        				if (props.read.filter((b)=>b.id === book.id).length!==0){
+			        					console.log("read")
+			        					book.shelf = "read"
+			        				}else{
+			        					book.shelf = "none"
+			        				}
+			        			}
+			        		}
+			        })
+			        console.log(value)
 		    		this.setState(()=>({
-			        books : value,
+			        books : value ,
 			      }))
 		    	}else{
 		    		this.setState(()=>({
@@ -69,10 +91,10 @@ class Search extends Component{
           <ol className="books-grid">
 	          {this.state.books.map((book)=>(
           			<li key = {book.id} >
-          				{/*JSON.stringify(book)*/}
+          				{JSON.stringify(book.shelf)}
 		          		<Book
 		          			id = {book.id}
-		          			imgLink = {book.imageLinks.smallThumbnail}
+		          			imgLink = {book.imageLinks ? book.imageLinks.smallThumbnail : 'https://via.placeholder.com/128x193'}
 		          			title = {book.title}
 		          			authors = {book.authors}
 		          			shelf = {book.shelf}

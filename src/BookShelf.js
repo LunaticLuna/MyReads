@@ -13,7 +13,7 @@ class BookShelf extends Component{
           				{/*JSON.stringify(book)*/}
 		          		<Book
 		          			id = {book.id}
-		          			imgLink = {book.imgLink?book.imgLink:book.imageLinks.smallThumbnail}
+		          			imgLink = {book.imageLinks ? book.imageLinks.smallThumbnail : 'https://via.placeholder.com/128x193'}
 		          			title = {book.title}
 		          			authors = {book.authors}
 		          			shelf = {book.shelf}

@@ -30,10 +30,10 @@ class BooksApp extends React.Component {
         books : currentState.books.filter((book)=> (book.id !== b.id) ).concat([b])
       }))
     }
-    
+  }
 
     
-  }
+  
   componentDidMount(){
     BooksAPI.getAll()
     .then((books)=>{
@@ -74,7 +74,11 @@ class BooksApp extends React.Component {
               </div>
             </div>)} />
         <Route path = '/search' render = {()=>(
-            <Search onMoveShelf = {(book,shelf)=>this.moveShelf(book,shelf)} />
+            <Search 
+              onMoveShelf = {(book,shelf)=>this.moveShelf(book,shelf)}
+              currentlyReading = {this.state.books.filter((book)=>book.shelf==='currentlyReading')}
+              wantToRead = {this.state.books.filter((book)=>book.shelf==='wantToRead')}
+              read = {this.state.books.filter((book)=>book.shelf==='read')} />
           )} />
         
       </div>
