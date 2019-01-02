@@ -91,7 +91,7 @@ class Search extends Component{
           <ol className="books-grid">
 	          {this.state.books.map((book)=>(
           			<li key = {book.id} >
-          				{JSON.stringify(book.shelf)}
+          				{/*JSON.stringify(book.shelf)*/}
 		          		<Book
 		          			id = {book.id}
 		          			imgLink = {book.imageLinks ? book.imageLinks.smallThumbnail : 'https://via.placeholder.com/128x193'}
